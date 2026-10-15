@@ -17,7 +17,7 @@ log_error() {
 }
 
 load_config() {
-	local config_file="${VAULT_IDEA_CONFIG:-$REPO_ROOT/config.sh}"
+	local config_file="${THE_BORG_CONFIG:-$REPO_ROOT/config.sh}"
 	if [ ! -f "$config_file" ]; then
 		echo "Config file not found: $config_file" >&2
 		echo "Copy config.example.sh to config.sh and edit it first." >&2

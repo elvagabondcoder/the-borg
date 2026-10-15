@@ -1,4 +1,4 @@
-# vault-idea-cron
+# the-borg
 
 A small cron-driven suite that watches an "ideas" folder inside an Obsidian
 vault and iteratively fleshes out whatever's in there.
@@ -18,7 +18,41 @@ those files. The next run reads your edits as input, refines the TODO list
 instead of repeating old ones. That loop — notes in, TODOs and questions out,
 your edits back in — is the whole product.
 
-## Requirements
+## Run with Docker (recommended)
+
+Everything the suite needs — the `claude` CLI, `jq`, `flock`, cron — lives in
+the image, so nothing has to be installed on the host beyond Docker itself.
+
+```sh
+git clone https://github.com/elvagabondcoder/the-borg.git
+cd the-borg
+cp .env.example .env
+"$EDITOR" .env    # set VAULT_IDEAS_DIR, STATE_DIR, and an auth token/key
+
+docker compose up -d --build
+docker compose logs -f   # watch the first pass run immediately
+```
+
+`VAULT_IDEAS_DIR` and `STATE_DIR` in `.env` are **host** paths — compose
+bind-mounts them into the container at the fixed paths `/vault/ideas` and
+`/state`, which is what the suite actually runs against internally. For
+auth, set one of `CLAUDE_CODE_OAUTH_TOKEN` (a long-lived token from
+`claude setup-token`, works against an existing Claude subscription) or
+`ANTHROPIC_API_KEY` in `.env` — see the comments there.
+
+On start, the container generates its own `config.sh` from `.env`, runs
+`the-borg-doctor.sh` (fails fast and loudly if something's misconfigured),
+does one immediate run so you see output right away, then hands off to
+`crond` for the `CRON_SCHEDULE` in `.env`. `docker compose restart` after
+editing `.env` to pick up changes.
+
+```sh
+docker compose down   # stop; STATE_DIR and your vault are untouched
+```
+
+## Run without Docker
+
+### Requirements
 
 - `claude` (Claude Code CLI) on your `PATH`, already logged in.
 - `jq`, `flock`, `timeout`, `sha256sum` — standard on most Linux distros and
@@ -27,26 +61,26 @@ your edits back in — is the whole product.
   `gflock`/`gtimeout`/`gsha256sum` under some package managers — make sure
   the unprefixed names resolve on your `PATH`, or symlink them).
 - `crontab` if you want the suite to install its own schedule (optional —
-  you can always run `bin/vault-idea-run.sh` by hand or from your own
+  you can always run `bin/the-borg-run.sh` by hand or from your own
   scheduler).
 
-## Quickstart
+### Quickstart
 
 ```sh
-git clone https://github.com/<you>/vault-idea-cron.git
-cd vault-idea-cron
+git clone https://github.com/elvagabondcoder/the-borg.git
+cd the-borg
 cp config.example.sh config.sh
 "$EDITOR" config.sh                 # set VAULT_IDEAS_DIR at minimum
 
-./bin/vault-idea-doctor.sh          # check prerequisites and config
-./bin/vault-idea-run.sh --dry-run   # see what would happen, writes nothing
-./bin/vault-idea-run.sh             # do one real run by hand
+./bin/the-borg-doctor.sh          # check prerequisites and config
+./bin/the-borg-run.sh --dry-run   # see what would happen, writes nothing
+./bin/the-borg-run.sh             # do one real run by hand
 
 # once you're happy with the output:
-./bin/vault-idea-install.sh         # install the cron schedule from config.sh
+./bin/the-borg-install.sh         # install the cron schedule from config.sh
 
 # to stop:
-./bin/vault-idea-uninstall.sh
+./bin/the-borg-uninstall.sh
 ```
 
 ## How it decides what to process
@@ -58,7 +92,7 @@ editing your raw notes *or* checking off a TODO *or* answering a question all
 trigger reprocessing — nothing else does.
 
 Machine bookkeeping (hashes, timestamps, logs, the run lock) lives outside
-the vault, in `STATE_DIR` (default `~/.vault-idea-cron`), so it never shows
+the vault, in `STATE_DIR` (default `~/.the-borg`), so it never shows
 up as sync noise in Obsidian and never clutters an idea folder. The only
 files this tool ever writes inside your vault are `TODO.md`, `QUESTIONS.md`,
 and — only if you create it — the folder gets skipped once you drop in a
@@ -75,8 +109,8 @@ time it's seen — after that it's out of the ideas folder entirely.
 ## Useful flags
 
 ```sh
-bin/vault-idea-run.sh --dry-run           # show what would happen, write nothing
-bin/vault-idea-run.sh --idea some-folder  # force-reprocess one idea, ignore the unchanged-skip
+bin/the-borg-run.sh --dry-run           # show what would happen, write nothing
+bin/the-borg-run.sh --idea some-folder  # force-reprocess one idea, ignore the unchanged-skip
 ```
 
 Combine both to preview the exact prompt that would be sent for one idea
@@ -105,7 +139,7 @@ machine.
 
 ## Troubleshooting
 
-- `bin/vault-idea-doctor.sh` — run this first. It checks that `claude`/`jq`
+- `bin/the-borg-doctor.sh` — run this first. It checks that `claude`/`jq`
   are on `PATH`, that `config.sh` loads, that `VAULT_IDEAS_DIR` exists, that
   `STATE_DIR` is writable, and whether a run lock is currently held.
 - Logs: `$STATE_DIR/logs/<timestamp>.log`, one per run. On a parse or

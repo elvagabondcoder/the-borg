@@ -2,7 +2,7 @@
 # Wraps `claude -p` invocations: timeout, retry, JSON result extraction. The
 # invoked process is never given filesystem-write permissions — it only
 # returns text, which the caller (lib/prompt.sh writers) turns into files.
-# Sourced by bin/vault-idea-run.sh.
+# Sourced by bin/the-borg-run.sh.
 
 # invoke_claude <prompt>
 # On success sets CLAUDE_RESULT and returns 0. On failure sets CLAUDE_ERROR

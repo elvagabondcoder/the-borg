@@ -35,7 +35,7 @@ ARCHIVE_DIR="$TMP_VAULT/Archive"
 LOG_RETENTION_DAYS=30
 EOF
 
-PATH="$TMP_BIN:$PATH" VAULT_IDEA_CONFIG="$TMP_STATE/config.sh" "$REPO_ROOT/bin/vault-idea-run.sh"
+PATH="$TMP_BIN:$PATH" THE_BORG_CONFIG="$TMP_STATE/config.sh" "$REPO_ROOT/bin/the-borg-run.sh"
 
 echo
 echo "=== Generated TODO.md ==="

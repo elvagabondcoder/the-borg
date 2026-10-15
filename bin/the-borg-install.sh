@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Idempotently installs (or updates) the crontab entry that runs
-# vault-idea-run.sh on the schedule configured in config.sh.
+# the-borg-run.sh on the schedule configured in config.sh.
 set -uo pipefail
 
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -9,8 +9,8 @@ source "$DIR/../lib/common.sh"
 load_config
 validate_config
 
-MARKER="# vault-idea-cron:managed-entry"
-RUN_SCRIPT="$REPO_ROOT/bin/vault-idea-run.sh"
+MARKER="# the-borg:managed-entry"
+RUN_SCRIPT="$REPO_ROOT/bin/the-borg-run.sh"
 mkdir -p "$STATE_DIR/logs"
 CRON_LOG="$STATE_DIR/logs/cron-stdout.log"
 
@@ -27,4 +27,4 @@ filtered="$(printf '%s\n' "$existing" | grep -vF "$MARKER" || true)"
 echo "Installed cron entry:"
 echo "  $CRON_LINE"
 echo
-echo "Run bin/vault-idea-doctor.sh to verify everything is set up correctly."
+echo "Run bin/the-borg-doctor.sh to verify everything is set up correctly."

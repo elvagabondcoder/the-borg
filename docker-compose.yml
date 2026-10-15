@@ -1,0 +1,18 @@
+services:
+  the-borg:
+    build: .
+    image: the-borg
+    env_file:
+      - .env
+    environment:
+      # Fixed container-side mount points. These intentionally override
+      # whatever host paths .env sets for the same names via env_file above —
+      # VAULT_IDEAS_DIR/STATE_DIR on the host are only meaningful for the
+      # volumes block below, the container always sees the paths on the
+      # right-hand side of the mounts.
+      VAULT_IDEAS_DIR: /vault/ideas
+      STATE_DIR: /state
+    volumes:
+      - ${VAULT_IDEAS_DIR}:/vault/ideas
+      - ${STATE_DIR}:/state
+    restart: unless-stopped

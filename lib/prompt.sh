@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Prompt assembly for one idea, plus parsing/writing of the model's response.
-# Sourced by bin/vault-idea-run.sh.
+# Sourced by bin/the-borg-run.sh.
 
 # build_prompt <idea_dir> <idea_name> <run_number>
 # Prints the assembled prompt to stdout.

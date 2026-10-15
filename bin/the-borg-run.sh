@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # Main runner: enumerate idea folders, process changed ones through claude,
 # write TODO.md/QUESTIONS.md. Intended to be invoked by cron (via
-# vault-idea-install.sh) or run by hand.
+# the-borg-install.sh) or run by hand.
 #
 # Usage:
-#   vault-idea-run.sh [--dry-run] [--idea <name>]
+#   the-borg-run.sh [--dry-run] [--idea <name>]
 set -uo pipefail
 shopt -s nullglob
 

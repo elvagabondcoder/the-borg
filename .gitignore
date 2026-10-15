@@ -1,3 +1,4 @@
 config.sh
+.env
 *.log
 .DS_Store

@@ -25,7 +25,7 @@ else
 	check_fail "jq not found on PATH"
 fi
 
-config_file="${VAULT_IDEA_CONFIG:-$REPO_ROOT/config.sh}"
+config_file="${THE_BORG_CONFIG:-$REPO_ROOT/config.sh}"
 if [ -f "$config_file" ]; then
 	# shellcheck disable=SC1090
 	if source "$config_file" 2>/dev/null; then
@@ -65,10 +65,10 @@ else
 fi
 
 if command -v crontab >/dev/null 2>&1; then
-	if crontab -l 2>/dev/null | grep -q 'vault-idea-cron:managed-entry'; then
+	if crontab -l 2>/dev/null | grep -q 'the-borg:managed-entry'; then
 		check_ok "crontab entry installed"
 	else
-		echo "[INFO] crontab entry not installed yet (run bin/vault-idea-install.sh)"
+		echo "[INFO] crontab entry not installed yet (run bin/the-borg-install.sh)"
 	fi
 else
 	echo "[INFO] crontab command not found — skipping cron check"

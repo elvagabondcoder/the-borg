@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# vault-idea-cron configuration
+# the-borg configuration
 #
 # Copy this file to config.sh (kept out of git — see .gitignore) and edit the
 # values below for your machine.
@@ -15,9 +15,9 @@ VAULT_IDEAS_DIR="/absolute/path/to/YourVault/Ideas"
 # run lockfile) is stored. Kept OUTSIDE the vault on purpose so Obsidian
 # sync tools never see it churn on every cron tick. Override only if you
 # have a reason to.
-STATE_DIR="${HOME}/.vault-idea-cron"
+STATE_DIR="${HOME}/.the-borg"
 
-# Standard 5-field crontab schedule, used by bin/vault-idea-install.sh.
+# Standard 5-field crontab schedule, used by bin/the-borg-install.sh.
 CRON_SCHEDULE="*/30 * * * *"
 
 # claude CLI options. Leave CLAUDE_MODEL empty to use the CLI's own default
